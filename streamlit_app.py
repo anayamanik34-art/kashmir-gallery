@@ -15,29 +15,38 @@ from PIL import Image
 ROOT = Path(__file__).parent
 LISTINGS = ROOT / "eksochanalytics-listings"
 
-# Each collection is a name, a description and one or more file patterns
-# (relative to this folder). Add an entry here to show more images in the app.
+# Your Etsy shop. Collections without their own listing link here.
+SHOP_URL = "https://eksochanalytics.etsy.com"
+
+# Each collection is a name, a description, one or more file patterns
+# (relative to this folder) and its Etsy listing ("" = use the shop link).
+# Add an entry here to show more images in the app.
 COLLECTIONS = {
     "Kashmir Illustrations": (
         "Ten scenes of Kashmiri life: shikaras, chinars, kahwa and more.",
         ["eksochanalytics-listings/illustrations-pack/files/*"],
+        "https://www.etsy.com/listing/4622879609",
     ),
     "Kashmiri Henna": (
         "Mehndi designs drawn from Kashmiri motifs.",
         ["eksochanalytics-listings/henna-pack/files/PNG/*"],
+        "https://www.etsy.com/listing/4622894411",
     ),
     "Rangoli": (
         "Circular rangoli patterns inspired by the valley.",
         ["kashmir/rangoli/*"],
+        "",
     ),
     "Stickers": (
         "Print-then-cut stickers from the Kashmir bundle.",
         ["eksochanalytics-listings/kashmir-bundle/files/3-Bookmarks-Gift-Tags-Stickers"
          "/Cricut-Print-Then-Cut/Individual-Stickers-PNG/*"],
+        "https://www.etsy.com/listing/4623541426",
     ),
     "Shop Photos & Logo": (
         "Shop cover, banners, process photos and the logo.",
         ["eksochanalytics-photos/*.png", "eksochanalytics-logo/*.png"],
+        "",
     ),
 }
 ALL = "All collections"
@@ -46,12 +55,11 @@ ALL = "All collections"
 # small, low-resolution copies. Then the app shows only those, with no downloads.
 ONLINE_INFO = ROOT / "previews" / "collections.json"
 ONLINE = ONLINE_INFO.exists()
-SHOP_URL = ""
 if ONLINE:
     info = json.loads(ONLINE_INFO.read_text(encoding="utf-8"))
     SHOP_URL = info.get("shop_url", "")
     COLLECTIONS = {
-        name: (c["description"], [f"previews/{c['folder']}/*"])
+        name: (c["description"], [f"previews/{c['folder']}/*"], c.get("buy_url", ""))
         for name, c in info["collections"].items()
     }
 
@@ -118,15 +126,22 @@ def human_size(n: int) -> str:
     return f"{n:.1f} GB"
 
 
+def buy_button(collection: str, primary: bool = True) -> None:
+    """'Buy this pack on Etsy' when the collection has a listing, else the shop link."""
+    listing = COLLECTIONS[collection][2]
+    label, url = ("🛒 Buy this pack on Etsy", listing) if listing else ("🛍️ Visit the Etsy shop", SHOP_URL)
+    if url:
+        st.link_button(label, url, width="stretch", type="primary" if primary else "secondary")
+
+
 @st.dialog("Preview", width="large")
-def preview(path: Path) -> None:
+def preview(path: Path, collection: str) -> None:
     st.subheader(nice_title(path))
     show(path, 1600)
     if ONLINE:
-        note = "Low-resolution preview. Full-resolution files are available in the shop."
-        st.caption(note)
-        if SHOP_URL:
-            st.link_button("Visit the shop", SHOP_URL, width="stretch", type="primary")
+        st.caption("Low-resolution preview. The full-resolution printable files "
+                   f"are part of the **{collection}** pack on Etsy.")
+        buy_button(collection)
         return
     details = [path.suffix[1:].upper(), human_size(path.stat().st_size)]
     if path.suffix.lower() != ".svg":
@@ -163,7 +178,7 @@ with st.sidebar:
     query = st.text_input("Search", placeholder="e.g. chinar, lotus, shikara")
     columns = st.slider("Images per row", 2, 6, 4)
     if ONLINE and SHOP_URL:
-        st.link_button("🛍️ Visit the shop", SHOP_URL, width="stretch")
+        st.link_button("🛍️ Visit my Etsy shop", SHOP_URL, width="stretch", type="primary")
 
 # Each item is (image path, the collection it belongs to).
 names = list(COLLECTIONS) if collection == ALL else [collection]
@@ -177,6 +192,9 @@ description = (f"Everything from all {len(COLLECTIONS)} collections."
                if collection == ALL else COLLECTIONS[collection][0])
 st.header(collection)
 st.caption(f"{description} · {len(items)} image{'s' if len(items) != 1 else ''}")
+if ONLINE and collection != ALL:
+    with st.columns([1, 2])[0]:
+        buy_button(collection)
 
 if not items:
     st.info("No images match your search." if query else "No images found.")
@@ -190,4 +208,4 @@ for start in range(0, len(items), columns):
             if collection == ALL:
                 st.caption(name)
             if st.button("View", key=f"view-{path}", width="stretch"):
-                preview(path)
+                preview(path, name)

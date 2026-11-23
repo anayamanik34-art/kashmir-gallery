@@ -1,25 +1,30 @@
 {
-  "shop_url": "",
+  "shop_url": "https://eksochanalytics.etsy.com",
   "collections": {
     "Kashmir Illustrations": {
       "description": "Ten scenes of Kashmiri life: shikaras, chinars, kahwa and more.",
-      "folder": "kashmir-illustrations"
+      "folder": "kashmir-illustrations",
+      "buy_url": "https://www.etsy.com/listing/4622879609"
     },
     "Kashmiri Henna": {
       "description": "Mehndi designs drawn from Kashmiri motifs.",
-      "folder": "kashmiri-henna"
+      "folder": "kashmiri-henna",
+      "buy_url": "https://www.etsy.com/listing/4622894411"
     },
     "Rangoli": {
       "description": "Circular rangoli patterns inspired by the valley.",
-      "folder": "rangoli"
+      "folder": "rangoli",
+      "buy_url": ""
     },
     "Stickers": {
       "description": "Print-then-cut stickers from the Kashmir bundle.",
-      "folder": "stickers"
+      "folder": "stickers",
+      "buy_url": "https://www.etsy.com/listing/4623541426"
     },
     "Shop Photos & Logo": {
       "description": "Shop cover, banners, process photos and the logo.",
-      "folder": "shop-photos-logo"
+      "folder": "shop-photos-logo",
+      "buy_url": ""
     }
   }
 }
