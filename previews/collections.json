@@ -1,0 +1,25 @@
+{
+  "shop_url": "",
+  "collections": {
+    "Kashmir Illustrations": {
+      "description": "Ten scenes of Kashmiri life: shikaras, chinars, kahwa and more.",
+      "folder": "kashmir-illustrations"
+    },
+    "Kashmiri Henna": {
+      "description": "Mehndi designs drawn from Kashmiri motifs.",
+      "folder": "kashmiri-henna"
+    },
+    "Rangoli": {
+      "description": "Circular rangoli patterns inspired by the valley.",
+      "folder": "rangoli"
+    },
+    "Stickers": {
+      "description": "Print-then-cut stickers from the Kashmir bundle.",
+      "folder": "stickers"
+    },
+    "Shop Photos & Logo": {
+      "description": "Shop cover, banners, process photos and the logo.",
+      "folder": "shop-photos-logo"
+    }
+  }
+}
